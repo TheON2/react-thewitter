@@ -18,7 +18,7 @@ function UserProfile() {
       actions={[
         <div key="twit">
           <Link href={`/user/${me.id}`}>
-            <a>짹짹<br />{me.Posts.length}</a>
+            <a>더윗<br />{me.Posts.length}</a>
           </Link>
         </div>,
         <div key="followings">
@@ -35,7 +35,7 @@ function UserProfile() {
     >
       <Card.Meta
         avatar={(
-          <Link href={`/user/${me.id}`}>
+          <Link href={`/user/${me.id}`} prefetch={false}>
             <a><Avatar>{me.nickname[0]}</Avatar></a>
           </Link>
         )}

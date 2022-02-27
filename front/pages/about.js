@@ -14,14 +14,14 @@ function About() {
   return (
     <AppLayout>
       <Head>
-        <title>ZeroCho | NodeBird</title>
+        <title>TheON2 | Thewitter</title>
       </Head>
       {userInfo
         ? (
           <Card
             actions={[
               <div key="twit">
-                짹짹
+                더윗
                 <br />
                 {userInfo.Posts}
               </div>,

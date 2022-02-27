@@ -4,20 +4,27 @@ import { Button, Checkbox, Form, Input } from 'antd';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import Router from 'next/router';
+import axios from 'axios';
+import { END } from 'redux-saga';
 import useInput from '../hooks/useInput';
 import AppLayout from '../components/AppLayout';
-import {LOAD_MY_INFO_REQUEST, SIGN_UP_REQUEST} from '../reducers/user';
-import wrapper from "../store/configureStore";
-import axios from "axios";
-import {LOAD_POST_REQUEST} from "../reducers/post";
-import {END} from "redux-saga";
+import { LOAD_MY_INFO_REQUEST, SIGN_UP_REQUEST } from '../reducers/user';
+import wrapper from '../store/configureStore';
+import { LOAD_POST_REQUEST } from '../reducers/post';
 
 const ErrorMessage = styled.div`
 color:red`;
 
 function Signup() {
   const dispatch = useDispatch();
-  const { signUpLoading, signUpDone, signUpError , me } = useSelector((state) => state.user);
+  const { signUpLoading, signUpDone, signUpError, me } = useSelector((state) => state.user);
+  const [email, onChangeEmail] = useInput('');
+  const [nickname, onChangeNickname] = useInput('');
+  const [password, onChangePassword] = useInput('');
+  const [password2, setPassword2] = useState('');
+  const [password2Error, setPassword2Error] = useState(false);
+  const [term, setTerm] = useState(false);
+  const [termError, setTermError] = useState(false);
 
   useEffect(() => {
     if ((me && me.id)) {
@@ -37,19 +44,11 @@ function Signup() {
     }
   }, [signUpError]); // signUpError가 날경우 signUpError값의 변화를 체크하여 에러경고 발생
 
-  const [email, onChangeEmail] = useInput('');
-  const [nickname, onChangeNickname] = useInput('');
-  const [password, onChangePassword] = useInput('');
-
-  const [password2, setPassword2] = useState('');
-  const [password2Error, setPassword2Error] = useState(false);
   const onChangePassword2 = useCallback((e) => {
     setPassword2(e.target.value);
     setPassword2Error(e.target.value !== password);
   }, [password]);
 
-  const [term, setTerm] = useState(false);
-  const [termError, setTermError] = useState(false);
   const onChangeTerm = useCallback((e) => {
     setTerm(e.target.checked);
     setTermError(false);
@@ -68,7 +67,7 @@ function Signup() {
   return (
     <AppLayout>
       <Head>
-        <title>회원가입 | NodeBird</title>
+        <title>회원가입 | Thewitter</title>
       </Head>
       <Form onFinish={onSubmit}>
         <div>
@@ -105,7 +104,7 @@ function Signup() {
           {password2Error && <ErrorMessage>비밀번호가 일치하지 않습니다.</ErrorMessage>}
         </div>
         <div>
-          <Checkbox name="user-term" checked={term} onChange={onChangeTerm}>김도원 말을 잘 들을 것에 동의힙니다.</Checkbox>
+          <Checkbox name="user-term" checked={term} onChange={onChangeTerm}>구현이 덜 됬는데 혼내지 않으실것에 동의합니다.</Checkbox>
           {termError && <ErrorMessage>약관에 동의 하셔야 합니다.</ErrorMessage>}
         </div>
         <div style={{ marginTop: 10 }}>

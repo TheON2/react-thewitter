@@ -5,7 +5,7 @@ const {User} = require('../models');
 module.exports = () => {
   passport.serializeUser((user, done) => {
     done(null, user.id);
-  }); // user id를 pk로 데이터를 저장
+  }); // 쿠키에 user id를 pk로 데이터를 저장
 
   passport.deserializeUser(async (id, done) => {
     try { // user id를 pk로 데이터 조회
@@ -16,7 +16,5 @@ module.exports = () => {
       done(error);
     }
   });
-
-
-  local();
+  local(); // 로그인 로직 구현 파일
 }

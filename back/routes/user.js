@@ -41,11 +41,25 @@ router.get('/', async (req, res, next) => { // GET /user
   }
 });
 
+router.get('/all', async (req, res, next) => { // GET /user
+  try {
+    if(req.user) {
+      const users = await User.findAll({
+        attributes:['id','email','nickname']
+      });
+      res.status(200).json(users);
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 router.get('/followers', isLoggedIn, async (req, res, next) => { // GET /user/followers
   try {
     const user = await User.findOne({ where: { id: req.user.id }});
     if (!user) {
-      res.status(403).send('없는 사람을 찾으려고 하시네요?');
+      res.status(403).send('유저가 존재하지 않습니다.');
     }
     const followers = await user.getFollowers({
       limit :parseInt(req.query.limit,10),
@@ -61,7 +75,7 @@ router.get('/followings', isLoggedIn, async (req, res, next) => { // GET /user/f
   try {
     const user = await User.findOne({ where: { id: req.user.id }});
     if (!user) {
-      res.status(403).send('없는 사람을 찾으려고 하시네요?');
+      res.status(403).send('유저가 존재하지 않습니다.');
     }
     const followings = await user.getFollowings({
       limit :parseInt(req.query.limit,10),

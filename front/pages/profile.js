@@ -5,6 +5,8 @@ import Router from 'next/router';
 import axios from 'axios';
 import { END } from 'redux-saga';
 import useSWR from 'swr';
+import { Avatar, Card } from 'antd';
+import Link from 'next/link';
 import AppLayout from '../components/AppLayout';
 import NickNameEditForm from '../components/NickNameEditForm';
 import FollowList from '../components/FollowList';
@@ -57,9 +59,36 @@ function Profile() {
   return (
     <>
       <Head>
-        <title>내 프로필 | NodeBird</title>
+        <title>내 프로필 | Thewitter</title>
       </Head>
       <AppLayout>
+        <Card
+          style={{ marginBottom: 30 }}
+          actions={[
+            <Link href={`/user/${me.id}`}>
+              <div key="twit">
+                더윗
+                <br />
+                {me.Posts.length}
+              </div>
+            </Link>,
+            <div key="following">
+              팔로잉
+              <br />
+              {me.Followings.length}
+            </div>,
+            <div key="follower">
+              팔로워
+              <br />
+              {me.Followers.length}
+            </div>,
+          ]}
+        >
+          <Card.Meta
+            avatar={<Avatar>{me.nickname[0]}</Avatar>}
+            title={me.nickname}
+          />
+        </Card>
         <NickNameEditForm />
         <FollowList header="팔로잉" data={followingsData} onClickMore={loadMoreFollowings} loading={!followingsData && !followingError} />
         <FollowList header="팔로워" data={followersData} onClickMore={loadMoreFollowers} loading={!followersData && !followerError} />

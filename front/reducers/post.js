@@ -1,4 +1,4 @@
-import produce from '../util/produce';
+import produce from 'immer';
 
 export const initialState = {
   mainPosts: [],
@@ -32,11 +32,17 @@ export const initialState = {
   removePostLoading: false,
   removePostDone: false,
   removePostError: null,
+  modifyPostLoading: false,
+  modifyPostDone: false,
+  modifyPostError: null,
   addCommentLoading: false,
   addCommentDone: false,
   addCommentError: null,
 };
 
+export const MODIFY_POST_REQUEST = 'MODIFY_POST_REQUEST';
+export const MODIFY_POST_SUCCESS = 'MODIFY_POST_SUCCESS';
+export const MODIFY_POST_FAILURE = 'MODIFY_POST_FAILURE';
 
 export const RETWEET_REQUEST = 'RETWEET_REQUEST';
 export const RETWEET_SUCCESS = 'RETWEET_SUCCESS';
@@ -58,6 +64,10 @@ export const LOAD_POST_REQUEST = 'LOAD_POST_REQUEST';
 export const LOAD_POST_SUCCESS = 'LOAD_POST_SUCCESS';
 export const LOAD_POST_FAILURE = 'LOAD_POST_FAILURE';
 
+export const LOAD_RELATED_POST_REQUEST = 'LOAD_RELATED_POST_REQUEST';
+export const LOAD_RELATED_POST_SUCCESS = 'LOAD_RELATED_POST_SUCCESS';
+export const LOAD_RELATED_POST_FAILURE = 'LOAD_RELATED_POST_FAILURE';
+
 export const LOAD_USER_POSTS_REQUEST = 'LOAD_USER_POSTS_REQUEST';
 export const LOAD_USER_POSTS_SUCCESS = 'LOAD_USER_POSTS_SUCCESS';
 export const LOAD_USER_POSTS_FAILURE = 'LOAD_USER_POSTS_FAILURE';
@@ -65,6 +75,10 @@ export const LOAD_USER_POSTS_FAILURE = 'LOAD_USER_POSTS_FAILURE';
 export const LOAD_HASHTAG_POSTS_REQUEST = 'LOAD_HASHTAG_POSTS_REQUEST';
 export const LOAD_HASHTAG_POSTS_SUCCESS = 'LOAD_HASHTAG_POSTS_SUCCESS';
 export const LOAD_HASHTAG_POSTS_FAILURE = 'LOAD_HASHTAG_POSTS_FAILURE';
+
+export const LOAD_LIKED_POSTS_REQUEST = 'LOAD_LIKED_POSTS_REQUEST';
+export const LOAD_LIKED_POSTS_SUCCESS = 'LOAD_LIKED_POSTS_SUCCESS';
+export const LOAD_LIKED_POSTS_FAILURE = 'LOAD_LIKED_POSTS_FAILURE';
 
 export const LOAD_SPOST_REQUEST = 'LOAD_SPOST_REQUEST';
 export const LOAD_SPOST_SUCCESS = 'LOAD_SPOST_SUCCESS';
@@ -92,17 +106,6 @@ export const addPost = (data) => ({
 export const addComment = (data) => ({
   type: ADD_COMMENT_REQUEST,
   data,
-});
-
-const dummyPost = (data) => ({
-  id: data.id,
-  content: data.content,
-  User: {
-    id: 1,
-    nickname: 'TheON2',
-  },
-  Images: [],
-  Comments: [],
 });
 
 // (이전상태,액션) => 다음상태
@@ -188,6 +191,8 @@ const reducer = (state = initialState, action) => produce(state, (draft) => {
       draft.loadSPostError = action.error;
       draft.loadSPostLoading = false;
       break;
+    case LOAD_LIKED_POSTS_REQUEST:
+    case LOAD_RELATED_POST_REQUEST:
     case LOAD_USER_POSTS_REQUEST:
     case LOAD_HASHTAG_POSTS_REQUEST:
     case LOAD_POST_REQUEST:
@@ -195,6 +200,8 @@ const reducer = (state = initialState, action) => produce(state, (draft) => {
       draft.loadPostDone = false;
       draft.loadPostError = null;
       break;
+    case LOAD_LIKED_POSTS_SUCCESS:
+    case LOAD_RELATED_POST_SUCCESS:
     case LOAD_USER_POSTS_SUCCESS:
     case LOAD_HASHTAG_POSTS_SUCCESS:
     case LOAD_POST_SUCCESS:
@@ -204,6 +211,8 @@ const reducer = (state = initialState, action) => produce(state, (draft) => {
       draft.loadPostDone = true;
       draft.hasMorePost = action.data.length === 10;
       break;
+    case LOAD_LIKED_POSTS_FAILURE:
+    case LOAD_RELATED_POST_FAILURE:
     case LOAD_USER_POSTS_FAILURE:
     case LOAD_HASHTAG_POSTS_FAILURE:
     case LOAD_POST_FAILURE:
@@ -240,6 +249,19 @@ const reducer = (state = initialState, action) => produce(state, (draft) => {
       draft.removePostError = action.error;
       draft.removePostLoading = false;
       break;
+    case MODIFY_POST_REQUEST:
+      draft.modifyPostLoading = true;
+      draft.modifyPostDone = false;
+      draft.modifyPostError = null;
+      break;
+    case MODIFY_POST_SUCCESS:
+      draft.mainPosts.find((v) => v.id === action.data.PostId).content = action.data.content;
+      draft.modifyPostLoading = false;
+      draft.modifyPostDone = true;
+      break;
+    case MODIFY_POST_FAILURE:
+      draft.modifyPostError = action.error;
+      draft.modifyPostLoading = false;
     case ADD_COMMENT_REQUEST:
       draft.addCommentLoading = true;
       draft.addCommentDone = false;

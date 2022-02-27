@@ -1,4 +1,4 @@
-import produce from '../util/produce';
+import produce from 'immer';
 
 export const initialState = {
   removeFollowerLoading: false, // 팔로워 차단 시도중
@@ -7,6 +7,9 @@ export const initialState = {
   loadUserLoading: false, // 다른 이용자 정보 로딩
   loadUserDone: false,
   loadUserError: null,
+  loadUsersLoading: false, // 전체 이용자 리스트 로딩
+  loadUsersDone: false,
+  loadUsersError: null,
   loadFollowersLoading: false, // 팔로워 목록 로딩
   loadFollowersDone: false,
   loadFollowersError: null,
@@ -36,6 +39,7 @@ export const initialState = {
   changeNicknameError: null,
   userInfo: null,
   me: null,
+  usersInfo: {},
   signUpData: {},
   loginData: {},
 };
@@ -47,6 +51,10 @@ export const LOAD_MY_INFO_FAILURE = 'LOAD_MY_INFO_FAILURE';
 export const LOAD_USER_REQUEST = 'LOAD_USER_REQUEST';
 export const LOAD_USER_SUCCESS = 'LOAD_USER_SUCCESS';
 export const LOAD_USER_FAILURE = 'LOAD_USER_FAILURE';
+
+export const LOAD_USERS_REQUEST = 'LOAD_USERS_REQUEST';
+export const LOAD_USERS_SUCCESS = 'LOAD_USERS_SUCCESS';
+export const LOAD_USERS_FAILURE = 'LOAD_USERS_FAILURE';
 
 export const LOG_IN_REQUEST = 'LOG_IN_REQUEST';
 export const LOG_IN_SUCCESS = 'LOG_IN_SUCCESS';
@@ -86,15 +94,6 @@ export const LOAD_FOLLOWINGS_FAILURE = 'LOAD_FOLLOWINGS_FAILURE';
 
 export const ADD_POST_TO_ME = 'ADD_POST_TO_ME';
 export const REMOVE_POST_OF_ME = 'REMOVE_POST_OF_ME';
-
-const dummyUser = (data) => ({
-  ...data,
-  nickname: '제로초',
-  id: 1,
-  Posts: [{ id: 1 }],
-  Followings: [{ nickname: '부기초' }, { nickname: 'Chanho Lee' }, { nickname: 'neue zeal' }],
-  Followers: [{ nickname: '부기초' }, { nickname: 'Chanho Lee' }, { nickname: 'neue zeal' }],
-});
 
 export const loginRequestAction = (data) => ({
   type: LOG_IN_REQUEST,
@@ -162,6 +161,20 @@ const reducer = (state = initialState, action) => produce(state, (draft) => {
     case LOAD_USER_FAILURE:
       draft.loadUserLoading = false;
       draft.loadUserError = action.error;
+      break;
+    case LOAD_USERS_REQUEST:
+      draft.loadUsersLoading = true;
+      draft.loadUsersError = null;
+      draft.loadUsersDone = false;
+      break;
+    case LOAD_USERS_SUCCESS:
+      draft.loadUsersLoading = false;
+      draft.usersInfo = action.data;
+      draft.loadUsersDone = true;
+      break;
+    case LOAD_USERS_FAILURE:
+      draft.loadUsersLoading = false;
+      draft.loadUsersError = action.error;
       break;
     case LOAD_MY_INFO_REQUEST:
       draft.loadMyInfoLoading = true;

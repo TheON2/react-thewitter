@@ -4,6 +4,7 @@ import { Avatar, Card } from 'antd';
 import { END } from 'redux-saga';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 import axios from 'axios';
 import { LOAD_USER_POSTS_REQUEST } from '../../reducers/post';
@@ -55,13 +56,15 @@ function User() {
       {userInfo && (userInfo.id !== me?.id)
         ? (
           <Card
-            style={{ marginBottom: 20 }}
+            style={{ marginBottom: 30 }}
             actions={[
-              <div key="twit">
-                짹짹
-                <br />
-                {userInfo.Posts}
-              </div>,
+              <Link href={`/user/${userInfo.id}`}>
+                <div key="twit">
+                  더윗
+                  <br />
+                  {userInfo.Posts}
+                </div>
+              </Link>,
               <div key="following">
                 팔로잉
                 <br />
@@ -75,7 +78,7 @@ function User() {
             ]}
           >
             <Card.Meta
-              avatar={<Avatar>{userInfo.nickname[0]}</Avatar>}
+              avatar={<Link href={`/user/${userInfo.id}`}><Avatar>{userInfo.nickname[0]}</Avatar></Link>}
               title={userInfo.nickname}
             />
           </Card>

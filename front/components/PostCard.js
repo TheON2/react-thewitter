@@ -8,7 +8,7 @@ import moment from 'moment';
 import PostImages from './PostImages';
 import CommentForm from './CommentForm';
 import PostCardContent from './PostCardContent';
-import { LIKE_POST_REQUEST, REMOVE_POST_REQUEST, UNLIKE_POST_REQUEST, RETWEET_REQUEST } from '../reducers/post';
+import { LIKE_POST_REQUEST, REMOVE_POST_REQUEST, UNLIKE_POST_REQUEST, RETWEET_REQUEST, MODIFY_POST_REQUEST } from '../reducers/post';
 import FollowButton from './FollowButton';
 
 moment.locale('ko');
@@ -17,6 +17,7 @@ function PostCard({ post }) {
   const dispatch = useDispatch();
   const { removePostLoading } = useSelector((state) => state.post);
   const [commentFormOpened, setCommentFormOpened] = useState(false);
+  const [editMode, setEditMode] = useState(false);
   const id = useSelector((state) => state.user.me?.id);
   const liked = post.Likers.find((v) => v.id === id);
 
@@ -64,10 +65,27 @@ function PostCard({ post }) {
     });
   }, [id]);
 
+  const onChangePost = useCallback((editText) => () => dispatch({
+    type: MODIFY_POST_REQUEST,
+    data: {
+      PostId: post.id,
+      content: editText,
+    },
+  }), [post]);
+
+  const onClickUpdate = useCallback(() => {
+    setEditMode(true);
+  }, []);
+
+  const onCancelUpdate = useCallback(() => {
+    setEditMode(false);
+  }, []);
+
   return (
     <div style={{ marginBottom: 20 }}>
       <Card
         cover={post.Images[0] && <PostImages images={post.Images} />}
+
         actions={[
           <RetweetOutlined key="retweet" onClick={onRetweet} />,
           liked
@@ -81,7 +99,7 @@ function PostCard({ post }) {
                 {id && post.User.id === id
                   ? (
                     <>
-                      <Button>수정</Button>
+                      {!post.RetweetId && <Button onClick={onClickUpdate}>수정</Button>}
                       <Button type="danger" loading={removePostLoading} onClick={onRemovePost}>삭제</Button>
                     </>
                   )
@@ -95,6 +113,7 @@ function PostCard({ post }) {
         title={post.RetweetId ? `${post.User.nickname}님이 리트윗 하셨습니다.` : null}
         extra={id && <FollowButton post={post} />}
       >
+
         {post.RetweetId && post.Retweet
           ? (
             <Card
@@ -108,7 +127,7 @@ function PostCard({ post }) {
                   </Link>
                 )}
                 title={post.Retweet.User.nickname}
-                description={<PostCardContent postData={post.Retweet.content} />}
+                description={<PostCardContent postData={post.Retweet.content} onCancelUpdate={onCancelUpdate} onChangePost={onChangePost} />}
               />
             </Card>
           )
@@ -122,7 +141,7 @@ function PostCard({ post }) {
                   </Link>
               )}
                 title={post.User.nickname}
-                description={<PostCardContent postData={post.content} />}
+                description={<PostCardContent onCancelUpdate={onCancelUpdate} editMode={editMode} postData={post.content} onChangePost={onChangePost} />}
               />
             </>
           )}

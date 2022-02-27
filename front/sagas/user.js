@@ -15,7 +15,13 @@ import {
   LOAD_FOLLOWINGS_SUCCESS,
   LOAD_MY_INFO_FAILURE,
   LOAD_MY_INFO_REQUEST,
-  LOAD_MY_INFO_SUCCESS, LOAD_USER_FAILURE, LOAD_USER_REQUEST, LOAD_USER_SUCCESS,
+  LOAD_MY_INFO_SUCCESS,
+  LOAD_USER_FAILURE,
+  LOAD_USER_REQUEST,
+  LOAD_USER_SUCCESS,
+  LOAD_USERS_FAILURE,
+  LOAD_USERS_REQUEST,
+  LOAD_USERS_SUCCESS,
   LOG_IN_FAILURE,
   LOG_IN_REQUEST,
   LOG_IN_SUCCESS,
@@ -66,6 +72,25 @@ function* loadUser(action) {
   } catch (err) {
     yield put({
       type: LOAD_USER_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function loadUsersAPI() {
+  return axios.get('/user/all');
+}
+
+function* loadUsers(action) {
+  try {
+    const result = yield call(loadUsersAPI, action.data);
+    yield put({ // put이 액션을 dispatch하는 역할과 빗슷하게 본다
+      type: LOAD_USERS_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({
+      type: LOAD_USERS_FAILURE,
       error: err.response.data,
     });
   }
@@ -287,6 +312,10 @@ function* watchLoadUserInfo() {
   yield takeLatest(LOAD_USER_REQUEST, loadUser);
 }
 
+function* watchLoadUsersInfo() {
+  yield takeLatest(LOAD_USERS_REQUEST, loadUsers);
+}
+
 export default function* userSaga() {
   yield all([
     fork(watchLogin),
@@ -296,6 +325,7 @@ export default function* userSaga() {
     fork(watchUnFollow),
     fork(watchLoadMyInfo),
     fork(watchLoadUserInfo),
+    fork(watchLoadUsersInfo),
     fork(watchChangenickName),
     fork(watchLoadFollowers),
     fork(watchRemoveFollower),

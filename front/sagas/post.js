@@ -9,16 +9,28 @@ import {
   ADD_POST_SUCCESS,
   LIKE_POST_FAILURE,
   LIKE_POST_REQUEST,
-  LIKE_POST_SUCCESS, LOAD_HASHTAG_POSTS_FAILURE,
-  LOAD_HASHTAG_POSTS_REQUEST, LOAD_HASHTAG_POSTS_SUCCESS,
+  LIKE_POST_SUCCESS,
+  LOAD_HASHTAG_POSTS_FAILURE,
+  LOAD_HASHTAG_POSTS_REQUEST,
+  LOAD_HASHTAG_POSTS_SUCCESS,
+  LOAD_LIKED_POSTS_FAILURE,
+  LOAD_LIKED_POSTS_REQUEST,
+  LOAD_LIKED_POSTS_SUCCESS,
   LOAD_POST_FAILURE,
   LOAD_POST_REQUEST,
   LOAD_POST_SUCCESS,
+  LOAD_RELATED_POST_FAILURE,
+  LOAD_RELATED_POST_REQUEST,
+  LOAD_RELATED_POST_SUCCESS,
   LOAD_SPOST_FAILURE,
   LOAD_SPOST_REQUEST,
-  LOAD_SPOST_SUCCESS, LOAD_USER_POSTS_FAILURE,
+  LOAD_SPOST_SUCCESS,
+  LOAD_USER_POSTS_FAILURE,
   LOAD_USER_POSTS_REQUEST,
   LOAD_USER_POSTS_SUCCESS,
+  MODIFY_POST_FAILURE,
+  MODIFY_POST_REQUEST,
+  MODIFY_POST_SUCCESS,
   REMOVE_POST_FAILURE,
   REMOVE_POST_REQUEST,
   REMOVE_POST_SUCCESS,
@@ -223,7 +235,7 @@ function loadUserPostsAPI(data, lastId) {
 
 function* loadUserPosts(action) {
   try {
-    const result = yield call(loadUserPostsAPI, action.data , action.lastId);
+    const result = yield call(loadUserPostsAPI, action.data, action.lastId);
     yield put({ // put이 액션을 dispatch하는 역할과 비슷하게 본다
       type: LOAD_USER_POSTS_SUCCESS,
       data: result.data,
@@ -237,13 +249,33 @@ function* loadUserPosts(action) {
   }
 }
 
+function RelatedPostAPI(lastId) {
+  return axios.get(`/posts/related?lastId=${lastId || 0}`);
+}
+
+function* RelatedPost(action) {
+  try {
+    const result = yield call(RelatedPostAPI, action.data, action.lastId);
+    yield put({ // put이 액션을 dispatch하는 역할과 비슷하게 본다
+      type: LOAD_RELATED_POST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: LOAD_RELATED_POST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
 function loadHashtagPostsAPI(data, lastId) {
   return axios.get(`/hashtag/${encodeURIComponent(data)}?lastId=${lastId || 0}`);
 }
 
 function* loadHashtagPosts(action) {
   try {
-    const result = yield call(loadHashtagPostsAPI, action.data , action.lastId);
+    const result = yield call(loadHashtagPostsAPI, action.data, action.lastId);
     yield put({ // put이 액션을 dispatch하는 역할과 비슷하게 본다
       type: LOAD_HASHTAG_POSTS_SUCCESS,
       data: result.data,
@@ -252,6 +284,45 @@ function* loadHashtagPosts(action) {
     console.error(err);
     yield put({
       type: LOAD_HASHTAG_POSTS_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function loadLikedPostsAPI(data, lastId) {
+  return axios.get(`/liked?lastId=${lastId || 0}`);
+}
+
+function* loadLikedPosts(action) {
+  try {
+    const result = yield call(loadLikedPostsAPI, action.data, action.lastId);
+    yield put({ // put이 액션을 dispatch하는 역할과 비슷하게 본다
+      type: LOAD_LIKED_POSTS_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: LOAD_LIKED_POSTS_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function modifyPostAPI(data) {
+  return axios.patch(`/post/${data.PostId}`, data);
+}
+
+function* modifyPost(action) {
+  try {
+    const result = yield call(modifyPostAPI, action.data);
+    yield put({ // put이 액션을 dispatch하는 역할과 빗슷하게 본다
+      type: MODIFY_POST_SUCCESS,
+      data: result.data, // PostId,UserId
+    });
+  } catch (err) {
+    yield put({
+      type: MODIFY_POST_FAILURE,
       error: err.response.data,
     });
   }
@@ -301,16 +372,31 @@ function* watchLoadHashtagPosts() {
   yield takeLatest(LOAD_HASHTAG_POSTS_REQUEST, loadHashtagPosts);
 }
 
+function* watchModifyPost() {
+  yield takeLatest(MODIFY_POST_REQUEST, modifyPost);
+}
+
+function* watchLoadRelatedPost() {
+  yield takeLatest(LOAD_RELATED_POST_REQUEST, RelatedPost);
+}
+
+function* watchLoadLikedtagPosts() {
+  yield takeLatest(LOAD_LIKED_POSTS_REQUEST, loadLikedPosts);
+}
+
 export default function* postSaga() {
   yield all([
     fork(watchAddPost),
     fork(watchLoadSPost),
     fork(watchLoadPost),
+    fork(watchLoadRelatedPost),
     fork(watchLoadHashtagPosts),
+    fork(watchLoadLikedtagPosts),
     fork(watchLoadUserPosts),
     fork(watchLikePost),
     fork(watchUnLikePost),
     fork(watchRemovePost),
+    fork(watchModifyPost),
     fork(watchAddComment),
     fork(watchUploadImages),
     fork(watchRetweet),
