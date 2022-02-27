@@ -1,8 +1,0 @@
-react-thewitter.pem
-/back/.env
-/front/node_modules
-/back/node_modules
-node_modules
-.next
-/front/build/
-.idea
