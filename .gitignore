@@ -6,3 +6,4 @@ node_modules
 .next
 /front/build/
 .idea
+.gitignore
