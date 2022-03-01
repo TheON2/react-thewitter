@@ -63,7 +63,7 @@ app.use(session({
   cookie:{
     httpOnly: true,
     secure: false,
-    domain: process.env.NODE_ENV === 'production' && 'http://theon2.co.kr'
+    domain: process.env.NODE_ENV === 'production' && '.theon2.co.kr'
   },
 }));
 
