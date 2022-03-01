@@ -1,1 +1,1 @@
-export const backUrl = 'http://3.37.252.197';
+export const backUrl = 'http://api.thewitter.duckdns.org';

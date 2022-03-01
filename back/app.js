@@ -40,7 +40,7 @@ if(process.env.NODE_ENV === 'production'){
 }
 
 app.use(cors({
-    origin: ['http://localhost:3000','thewitter.com','http://3.37.62.120'],
+    origin: ['http://localhost:3000','thewitter.duckdns.com','http://3.37.121.138'],
     credentials: true,
   }
 ));
@@ -56,6 +56,11 @@ app.use(session({
   saveUninitialized: false,
   resave: false,
   secret: process.env.COOKIE_SECRET,
+  cookie:{
+    httpOnly: true,
+    secure: false,
+    domain: process.env.NODE_ENV === 'production' && '.thewitter.duckdns.org'
+  },
 }));
 
 app.use(passport.initialize());
