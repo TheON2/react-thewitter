@@ -1,1 +1,1 @@
-export const backUrl = 'http://api.thewitter.duckdns.org';
+export const backUrl = 'http://api.theon2.co.kr';

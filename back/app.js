@@ -40,7 +40,7 @@ if(process.env.NODE_ENV === 'production'){
 }
 
 app.use(cors({
-    origin: ['http://localhost:3000','thewitter.duckdns.com','http://3.37.121.138'],
+    origin: ['http://localhost:3000','theon2.co.kr','http://3.37.121.138'],
     credentials: true,
   }
 ));
@@ -59,7 +59,7 @@ app.use(session({
   cookie:{
     httpOnly: true,
     secure: false,
-    domain: process.env.NODE_ENV === 'production' && '.thewitter.duckdns.org'
+    domain: process.env.NODE_ENV === 'production' && '.theon2.co.kr'
   },
 }));
 
