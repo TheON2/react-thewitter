@@ -40,7 +40,7 @@ if(process.env.NODE_ENV === 'production'){
 }
 
 app.use(cors({
-    origin: ['http://localhost:3000','thewitter.com'],
+    origin: ['http://localhost:3000','thewitter.com','http://3.37.62.120'],
     credentials: true,
   }
 ));
