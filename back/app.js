@@ -35,15 +35,19 @@ if(process.env.NODE_ENV === 'production'){
   app.use(morgan('combined'));
   app.use(hpp());
   app.use(helmet());
+  app.use(cors({
+      origin: ['http://theon2.co.kr','http://3.37.121.138'],
+      credentials: true,
+    }
+  ));
 } else {
   app.use(morgan('dev'));
+  app.use(cors({
+      origin: true,
+      credentials: true,
+    }
+  ));
 }
-
-app.use(cors({
-    origin: ['http://localhost:3000','theon2.co.kr','http://3.37.121.138'],
-    credentials: true,
-  }
-));
 
 app.use('/',express.static(path.join(__dirname, 'uploads')));
 // localhost3065 = 백서버의 도메인을 위해 '/' 을 붙여주고 각OS에 경로를 최적화 하기 위해
@@ -59,7 +63,7 @@ app.use(session({
   cookie:{
     httpOnly: true,
     secure: false,
-    domain: process.env.NODE_ENV === 'production' && '.theon2.co.kr'
+    domain: process.env.NODE_ENV === 'production' && 'http://theon2.co.kr'
   },
 }));
 
