@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { PropTypes } from 'prop-types';
 import { PlusOutlined } from '@ant-design/icons';
 import ImagesZoom from './ImagesZoom';
+import { backUrl } from '../config/config';
 
 function PostImages({ images }) {
   const [showImagesZoom, setShowImagesZoom] = useState(false);
@@ -15,7 +16,7 @@ function PostImages({ images }) {
   if (images.length === 1) {
     return (
       <>
-        <img role="presantation" src={`http://localhost:3065/${images[0].src}`} alt={images[0].src} onClick={onZoom} />
+        <img role="presantation" src={`${backUrl}/${images[0].src}`} alt={images[0].src} onClick={onZoom} />
         {showImagesZoom && <ImagesZoom images={images} onClose={onClose} />}
       </>
     );
@@ -23,8 +24,8 @@ function PostImages({ images }) {
   if (images.length === 2) {
     return (
       <>
-        <img role="presantation" style={{ width: '50%', display: 'inline-block' }} src={`http://localhost:3065/${images[0].src}`} alt={images[0].src} onClick={onZoom} />
-        <img role="presantation" style={{ width: '50%', display: 'inline-block' }} src={`http://localhost:3065/${images[1].src}`} alt={images[1].src} onClick={onZoom} />
+        <img role="presantation" style={{ width: '50%', display: 'inline-block' }} src={`${backUrl}/${images[0].src}`} alt={images[0].src} onClick={onZoom} />
+        <img role="presantation" style={{ width: '50%', display: 'inline-block' }} src={`${backUrl}/${images[1].src}`} alt={images[1].src} onClick={onZoom} />
         {showImagesZoom && <ImagesZoom images={images} onClose={onClose} />}
       </>
     );
@@ -32,7 +33,7 @@ function PostImages({ images }) {
 
   return (
     <div>
-      <img role="presantation" style={{ width: '50%', display: 'inline-block' }} src={`http://localhost:3065/${images[0].src}`} alt={images[0].src} onClick={onZoom} />
+      <img role="presantation" style={{ width: '50%', display: 'inline-block' }} src={`${backUrl}/${images[0].src}`} alt={images[0].src} onClick={onZoom} />
       {showImagesZoom && <ImagesZoom images={images} onClose={onClose} />}
       <div
         role="presentation"
