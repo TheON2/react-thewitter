@@ -1,4 +1,4 @@
-import { all, call, fork, put, takeLatest, throttle } from 'redux-saga/effects';
+import { all, call, fork, put, takeLatest } from 'redux-saga/effects';
 import axios from 'axios';
 import {
   ADD_COMMENT_FAILURE,
@@ -341,7 +341,7 @@ function* watchAddComment() {
 }
 
 function* watchLoadPost() {
-  yield throttle(2000, LOAD_POST_REQUEST, loadPost);
+  yield takeLatest(LOAD_POST_REQUEST, loadPost);
 }
 
 function* watchLikePost() {
