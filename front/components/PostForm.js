@@ -73,7 +73,7 @@ function PostForm() {
       <div>
         {imagePaths.map((v, i) => (
           <div key={v} style={{ display: 'inline-block' }}>
-            <img src={v} style={{ width: '200px' }} alt={v} />
+            <img src={v.replace(/\/thumb\//, '/original/')} style={{ width: '200px' }} alt={v} />
             {/* 프론트와 백의 도메인이 다르기 때문에 도메인 교정을 해주어야 백의 이미지를 성공적으로 들고와 렌더링 할 수 있다. */}
             <div>
               <Button onClick={onRemoveImage(i)}>제거</Button>
